@@ -9,7 +9,7 @@ end
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/aweasdwesad/private/main/namer6.lua", true))()
 
-repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").WalkSpeed == 0
+--repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").WalkSpeed == 0
 
 
 
