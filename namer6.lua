@@ -21,7 +21,7 @@
 	local R15toR6 = true --tries to convert your character to r6 if its r15
 	local addtools = false --puts all tools from backpack to character and lets you hold them after reanimation
 	local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
-	local method = 2 --reanimation method
+	local method = 5 --reanimation method
 	--methods:
 	--0 - breakJoints (takes [loadtime] seconds to laod)
 	--1 - limbs
