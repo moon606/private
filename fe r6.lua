@@ -7,7 +7,7 @@ local args = {
 game:GetService("ReplicatedStorage").SetAFK:FireServer(unpack(args))
 end
 
-loadstring(game:HttpGet("https://pastebin.com/raw/LbUSY7DD", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/aweasdwesad/private/main/namer6.lua", true))()
 
 repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").WalkSpeed == 0
 
