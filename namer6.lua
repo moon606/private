@@ -10,7 +10,7 @@
 	local idleMag = 0.01 --used only in case netboost is set to a number value
 	--if magnitude of the real velocity of a part is lower than this
 	--then the fake velocity is being set to Vector3.new(0, netboost, 0)
-	local noRotVel = false --parts rotation velocity set to Vector3.new(0, 0, 0)
+	local noRotVel = true --parts rotation velocity set to Vector3.new(0, 0, 0)
 	local simradius = "shp" --simulation radius (net bypass) method
 	--"shp" - sethiddenproperty
 	--"ssr" - setsimulationradius
@@ -21,7 +21,7 @@
 	local R15toR6 = true --tries to convert your character to r6 if its r15
 	local addtools = false --puts all tools from backpack to character and lets you hold them after reanimation
 	local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
-	local method = 5 --reanimation method
+	local method = 3 --reanimation method
 	--methods:
 	--0 - breakJoints (takes [loadtime] seconds to laod)
 	--1 - limbs
@@ -34,7 +34,7 @@
 	--1 - AlignPosition rigidity enabled true
 	--2 - 2 AlignPositions rigidity enabled both true and false
 	--3 - AlignPosition rigidity enabled false
-	local hedafterneck = true --disable aligns for head and enable after neck is removed
+	local hedafterneck = false --disable aligns for head and enable after neck is removed
 
 	local lp = game:GetService("Players").LocalPlayer
 	local rs = game:GetService("RunService")
