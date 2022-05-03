@@ -19,7 +19,7 @@
 	local newanimate = false --disables the animate script and enables after reanimation
 	local discharscripts = false --disables all localScripts parented to your character before reanimation
 	local R15toR6 = true --tries to convert your character to r6 if its r15
-	local addtools = false --puts all tools from backpack to character and lets you hold them after reanimation
+	local addtools = true --puts all tools from backpack to character and lets you hold them after reanimation
 	local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
 	local method = 3 --reanimation method
 	--methods:
