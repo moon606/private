@@ -2,7 +2,7 @@
 	
 	
 
-	local netboost = Vector3.new(0, 45, 0) --velocity 
+	local netboost = 100 --velocity 
 	--netboost usage: 
 	--set to false to disable
 	--set to a vector3 value if you dont want the velocity to change
