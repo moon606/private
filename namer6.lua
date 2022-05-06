@@ -11,7 +11,7 @@
 	--if magnitude of the real velocity of a part is lower than this
 	--then the fake velocity is being set to Vector3.new(0, netboost, 0)
 	local noRotVel = true --parts rotation velocity set to Vector3.new(0, 0, 0)
-	local simradius = "shp" --simulation radius (net bypass) method
+	local simradius = "ssr" --simulation radius (net bypass) method
 	--"shp" - sethiddenproperty
 	--"ssr" - setsimulationradius
 	--false - disable
