@@ -2,7 +2,7 @@
 	
 	
 
-	local netboost = 100 --velocity 
+	local netboost = 9000 --velocity 
 	--netboost usage: 
 	--set to false to disable
 	--set to a vector3 value if you dont want the velocity to change
