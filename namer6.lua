@@ -14,14 +14,18 @@ local simradius = "shp" --simulation radius (net bypass) method
 --"shp" - sethiddenproperty
 --"ssr" - setsimulationradius
 --false - disable
+local noclipAllParts = false --set it to true if you want noclip
+local flingpart = "HumanoidRootPart" --the part that will be used to fling (ctrl + F "fling function")
 local antiragdoll = true --removes hingeConstraints and ballSocketConstraints from your character
 local newanimate = true --disables the animate script and enables after reanimation
 local discharscripts = true --disables all localScripts parented to your character before reanimation
 local R15toR6 = true --tries to convert your character to r6 if its r15
+local hatcollide = true --makes hats cancollide (credit to ShownApe) (works only with reanimate method 0)
+local humState16 = true --enables collisions for limbs before the humanoid dies (using hum:ChangeState)
 local addtools = true --puts all tools from backpack to character and lets you hold them after reanimation
 local hedafterneck = true --disable aligns for head and enable after neck is removed
 local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
-local method = 3 --reanimation method
+local method = 0 --reanimation method
 --methods:
 --0 - breakJoints (takes [loadtime] seconds to laod)
 --1 - limbs
@@ -152,27 +156,26 @@ local destroyhum = (method == 4) or (method == 5)
 local breakjoints = (method == 0) or (method == 4)
 local antirespawn = (method == 0) or (method == 2) or (method == 3)
 
+hatcollide = hatcollide and (method == 0)
+
 addtools = addtools and gp(lp, "Backpack", "Backpack")
 
 local fenv = getfenv()
-if simradius == "shp" then
-	local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
-	if shp then
-		spawn(function()
-			while c and heartbeat:Wait() do
-				shp(lp, "SimulationRadius", inf)
-			end
-		end)
-	end
-elseif simradius == "ssr" then
-	local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
-	if ssr then
-		spawn(function()
-			while c and heartbeat:Wait() do
-				ssr(inf)
-			end
-		end)
-	end
+local shp = fenv.sethiddenproperty or fenv.set_hidden_property or fenv.set_hidden_prop or fenv.sethiddenprop
+local ssr = fenv.setsimulationradius or fenv.set_simulation_radius or fenv.set_sim_radius or fenv.setsimradius or fenv.set_simulation_rad or fenv.setsimulationrad
+
+if shp and (simradius == "shp") then
+	spawn(function()
+		while c and heartbeat:Wait() do
+			shp(lp, "SimulationRadius", inf)
+		end
+	end)
+elseif ssr and (simradius == "ssr") then
+	spawn(function()
+		while c and heartbeat:Wait() do
+			ssr(inf)
+		end
+	end)
 end
 
 antiragdoll = antiragdoll and function(v)
@@ -211,13 +214,6 @@ elseif newanimate then
 		animate.Disabled = true
 	else
 		newanimate = false
-	end
-end
-
-local hum = c:FindFirstChildOfClass("Humanoid")
-if hum then
-	for i, v in pairs(hum:GetPlayingAnimationTracks()) do
-		v:Stop()
 	end
 end
 
@@ -265,7 +261,47 @@ for i, v in pairs(c:GetDescendants()) do
 end
 
 c.Archivable = true
+local hum = c:FindFirstChildOfClass("Humanoid")
+if hum then
+	for i, v in pairs(hum:GetPlayingAnimationTracks()) do
+		v:Stop()
+	end
+end
 local cl = c:Clone()
+if hum and humState16 then
+    hum:ChangeState(Enum.HumanoidStateType.Physics)
+    if destroyhum then
+        wait(1.6)
+    end
+end
+if hum and hum.Parent and destroyhum then
+    hum:Destroy()
+end
+
+if not c then
+    return
+end
+
+local head = gp(c, "Head", "BasePart")
+local torso = gp(c, "Torso", "BasePart") or gp(c, "UpperTorso", "BasePart")
+local root = gp(c, "HumanoidRootPart", "BasePart")
+if hatcollide and c:FindFirstChildOfClass("Accessory") then
+    local anything = c:FindFirstChildOfClass("BodyColors") or gp(c, "Health", "Script")
+    if not (torso and root and anything) then
+        return
+    end
+    torso:Destroy()
+    root:Destroy()
+    if shp then
+        for i,v in pairs(c:GetChildren()) do
+            if v:IsA("Accessory") then
+                shp(v, "BackendAccoutrementState", 0)
+            end 
+        end
+    end
+    anything:Destroy()
+end
+
 for i, v in pairs(cl:GetDescendants()) do
 	if v:IsA("BasePart") then
 		v.Transparency = 1
@@ -282,26 +318,21 @@ end)
 
 for i, v in pairs(c:GetChildren()) do
 	if v ~= model then
-		if destroyhum and v:IsA("Humanoid") then
-			v:Destroy()
-		else
-			if addtools and v:IsA("Tool") then
-				for i1, v1 in pairs(v:GetDescendants()) do
-					if v1 and v1.Parent and v1:IsA("BasePart") then
-						local bv = Instance.new("BodyVelocity", v1)
-						bv.Velocity = v3_0
-						bv.MaxForce = v3(1000, 1000, 1000)
-						bv.P = 1250
-						bv.Name = "bv_" .. v.Name
-					end
+		if addtools and v:IsA("Tool") then
+			for i1, v1 in pairs(v:GetDescendants()) do
+				if v1 and v1.Parent and v1:IsA("BasePart") then
+					local bv = Instance.new("BodyVelocity", v1)
+					bv.Velocity = v3_0
+					bv.MaxForce = v3(1000, 1000, 1000)
+					bv.P = 1250
+					bv.Name = "bv_" .. v.Name
 				end
 			end
-			v.Parent = model
 		end
+		v.Parent = model
 	end
 end
-local head = gp(model, "Head", "BasePart")
-local torso = gp(model, "Torso", "BasePart") or gp(model, "UpperTorso", "BasePart")
+
 if breakjoints then
 	model:BreakJoints()
 else
@@ -341,28 +372,21 @@ for i, v in pairs(cl:GetChildren()) do
 end
 cl:Destroy()
 
-local modelDes = {}
-for i, v in pairs(model:GetDescendants()) do
-	if v:IsA("BasePart") then
-		i = tostring(i)
-		v.Destroying:Connect(function()
-			modelDes[i] = nil
-		end)
-		modelDes[i] = v
-	end
-end
-local modelcolcon = nil
-local function modelcolf()
-	if model then
-		for i, v in pairs(modelDes) do
-			v.CanCollide = false
+local noclipmodel = (noclipAllParts and c) or model
+local noclipcon = nil
+local function uncollide()
+	if noclipmodel then
+		for i, v in pairs(noclipmodel:GetDescendants()) do
+		    if v:IsA("BasePart") then
+			    v.CanCollide = false
+		    end
 		end
 	else
-		modelcolcon:Disconnect()
+		noclipcon:Disconnect()
 	end
 end
-modelcolcon = stepped:Connect(modelcolf)
-modelcolf()
+noclipcon = stepped:Connect(uncollide)
+uncollide()
 
 for i, scr in pairs(model:GetDescendants()) do
 	if (scr.ClassName == "Script") and table.find(scriptNames, scr.Name) then
@@ -668,4 +692,98 @@ if R15toR6 then
 		hum1.RigType = Enum.HumanoidRigType.R6
 		hum1.HipHeight = 0
 	end
+end
+
+--fling function
+--usage: fling([part or CFrame or Vector3], [fling duration (seconds)], [rotation velocity (Vector3)])
+
+local flingpart0 = gp(model, flingpart, "BasePart")
+local flingpart1 = gp(c, flingpart, "BasePart")
+
+local fling = function() end
+if flingpart0 and flingpart1 then
+    flingpart0.Destroying:Connect(function()
+        flingpart0 = nil
+        fling = function() end
+    end)
+    flingpart1.Destroying:Connect(function()
+        flingpart1 = nil
+        fling = function() end
+    end)
+    --flingpart1.Archivable = true
+    local att0 = gp(flingpart0, "att0_" .. flingpart0.Name, "Attachment")
+    local att1 = gp(flingpart1, "att1_" .. flingpart1.Name, "Attachment")
+    if att0 and att1 then
+        fling = function(target, duration, rotVelocity)
+            if (typeof(target) == "Instance" and target:IsA("BasePart")) or (typeof(target) == "CFrame") then
+                target = target.Position
+            elseif typeof(target) ~= "Vector3" then
+                return
+            end
+            if type(duration) ~= number then
+                duration = tonumber(duration) or 0.5
+            end
+            if typeof(rotVelocity) ~= "Vector3" then
+                rotVelocity = v3(20000, 20000, 20000)
+            end
+            if not (target and flingpart0 and flingpart1 and att0 and att1) then
+                return
+            end
+            local flingpart = flingpart0:Clone()
+            flingpart.Transparency = 1
+            flingpart.Size = v3(0.01, 0.01, 0.01)
+            flingpart.CanCollide = false
+            flingpart.Name = "flingpart_" .. flingpart0.Name
+            flingpart.Anchored = true
+            flingpart.Destroying:Connect(function()
+                flingpart = nil
+            end)
+            flingpart.Parent = flingpart1
+            if flingpart0.Transparency > 0.5 then
+                flingpart0.Transparency = 0.5
+            end
+            att1.Parent = flingpart
+            for i, v in pairs(att0:GetChildren()) do
+                if v:IsA("AlignOrientation") then
+                    v.Enabled = false
+                end
+            end
+            local con = nil
+            con = heartbeat:Connect(function()
+                if target and flingpart and flingpart0 and flingpart1 and att0 and att1 then
+                    flingpart0.RotVelocity = rotVelocity
+                    flingpart.Position = target
+                else
+                    con:Disconnect()
+                end
+            end)
+            local steppedRotVel = v3(
+                ((target.X > 0) and -1) or 1,
+                ((target.Y > 0) and -1) or 1,
+                ((target.Z > 0) and -1) or 1
+            )
+            local con = nil
+            con = stepped:Connect(function()
+                if target and flingpart and flingpart0 and flingpart1 and att0 and att1 then
+                    flingpart0.RotVelocity = steppedRotVel
+                    flingpart.Position = target
+                else
+                    con:Disconnect()
+                end
+            end)
+            wait(duration)
+            target = nil
+            if not (flingpart and flingpart0 and flingpart1 and att0 and att1) then
+                return
+            end
+            flingpart0.RotVelocity = v3_0
+            att1.Parent = flingpart1
+            for i, v in pairs(att0:GetChildren()) do
+                if v:IsA("AlignOrientation") then
+                    v.Enabled = true
+                end
+            end
+            flingpart:Destroy()
+        end
+    end
 end
