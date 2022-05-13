@@ -584,13 +584,7 @@ end
 coroutine.wrap(FXCPGR_fake_script)()
 
 
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local Heartbeat = game:GetService("RunService").Heartbeat
 
-Heartbeat:Connect(function()
-    LocalPlayer.MaximumSimulationRadius = math.huge
-    sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
-end)
 
 
 print("hi")
