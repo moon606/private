@@ -1,6 +1,6 @@
 
 
-local gui = game:GetService("CoreGui"):FindFirstChild("bloxton"):FindFirstChild("Frame"):FindFirstChild("chatbypassf")
+local gui = game:GetService("CoreGui"):WaitForChild("bloxton"):FindFirstChild("Frame"):FindFirstChild("chatbypassf")
 
 function byy(whatthefuck)
 	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(whatthefuck,"All")
