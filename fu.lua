@@ -9,7 +9,7 @@ end
 
 
 
-for i,v in pairs(game:GetService("CoreGui"):WaitForChild("bloxton"):GetDescendants()) do
+for i,v in pairs(game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("bloxton"):GetDescendants()) do
 
 	if v.Name == "Fuck"  and v:IsA("ImageLabel") and v:FindFirstChild("Button") then
 		v.Button.MouseButton1Down:Connect(function()
