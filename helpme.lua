@@ -13,6 +13,7 @@ for i,v in pairs(game.Players.LocalPlayer:WaitForChild("PlayerGui"):WaitForChild
 
 	if v.Name == "Fuck"  and v:IsA("ImageLabel") and v:FindFirstChild("Button") then
 		v.Button.MouseButton1Down:Connect(function()
+			
 			byy("ffðŒ‘ðŒ‘ðŒ‘uðŒ‘ðŒ‘ðŒ‘cðŒ‘ðŒ‘ðŒ‘k ")
 		end)
 	elseif v.Name == "Fuckyou"  and v:IsA("ImageLabel") and v:FindFirstChild("Button") then
