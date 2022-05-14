@@ -2,13 +2,15 @@
 local Vector3_101 = Vector3.new(1, 0, 1)
 local netless_Y = Vector3.new(0, 25.1, 0)
 local function getNetlessVelocity(realPartVelocity) --edit this if you have a better netless method
-    local netlessVelocity = realPartVelocity * Vector3_101
-    local mag = netlessVelocity.Magnitude
-    if mag > 0.1 then
-        netlessVelocity *= 100 / mag
+    if (realPartVelocity.Y > 1) or (realPartVelocity.Y < -1) then
+        return realPartVelocity * (25.1 / realPartVelocity.Y)
     end
-    netlessVelocity += netless_Y
-    return netlessVelocity
+    realPartVelocity *= Vector3_101
+    local mag = realPartVelocity.Magnitude
+    if mag > 1 then
+        realPartVelocity *= 100 / mag
+    end
+    return realPartVelocity + netless_Y
 end
 local simradius = "shp" --simulation radius (net bypass) method
 --"shp" - sethiddenproperty
@@ -20,12 +22,12 @@ local antiragdoll = true --removes hingeConstraints and ballSocketConstraints fr
 local newanimate = true --disables the animate script and enables after reanimation
 local discharscripts = true --disables all localScripts parented to your character before reanimation
 local R15toR6 = true --tries to convert your character to r6 if its r15
-local hatcollide = true --makes hats cancollide (credit to ShownApe) (works only with reanimate method 0)
+local hatcollide = false --makes hats cancollide (credit to ShownApe) (works only with reanimate method 0)
 local humState16 = true --enables collisions for limbs before the humanoid dies (using hum:ChangeState)
-local addtools = true --puts all tools from backpack to character and lets you hold them after reanimation
+local addtools = false --puts all tools from backpack to character and lets you hold them after reanimation
 local hedafterneck = true --disable aligns for head and enable after neck is removed
 local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
-local method = 0 --reanimation method
+local method = 3 --reanimation method
 --methods:
 --0 - breakJoints (takes [loadtime] seconds to laod)
 --1 - limbs
@@ -694,8 +696,13 @@ if R15toR6 then
 	end
 end
 
---fling function
---usage: fling([part or CFrame or Vector3], [fling duration (seconds)], [rotation velocity (Vector3)])
+--[[
+    fling function
+    usage: fling(target, duration, velocity)
+    target can be set to: basePart, CFrame, Vector3, character model or humanoid
+    duration (fling time) can be set to a number or a string containing the number (in seconds) will be set to 0.5 if not provided,
+    velocity (fling part rotation velocity) can be set to a vector3 value (Vector3.new(20000, 20000, 20000) if not provided)
+]]
 
 local flingpart0 = gp(model, flingpart, "BasePart")
 local flingpart1 = gp(c, flingpart, "BasePart")
@@ -706,20 +713,54 @@ if flingpart0 and flingpart1 then
         flingpart0 = nil
         fling = function() end
     end)
+    flingpart0.Archivable = true
     flingpart1.Destroying:Connect(function()
         flingpart1 = nil
         fling = function() end
     end)
-    --flingpart1.Archivable = true
     local att0 = gp(flingpart0, "att0_" .. flingpart0.Name, "Attachment")
     local att1 = gp(flingpart1, "att1_" .. flingpart1.Name, "Attachment")
     if att0 and att1 then
+        att0.Destroying:Connect(function()
+            att0 = nil
+            fling = function() end
+        end)
+        att1.Destroying:Connect(function()
+            att1 = nil
+            fling = function() end
+        end)
+        local lastfling = nil
         fling = function(target, duration, rotVelocity)
-            if (typeof(target) == "Instance" and target:IsA("BasePart")) or (typeof(target) == "CFrame") then
+            if typeof(target) == "Instance" then
+                if target:IsA("BasePart") then
+                    target = target.Position
+                elseif target:IsA("Model") then
+                    target = gp(target, "HumanoidRootPart", "BasePart") or gp(target, "Torso", "BasePart") or gp(target, "UpperTorso", "BasePart") or target:FindFirstChildWhichIsA("BasePart")
+                    if target then
+                        target = target.Position
+                    else
+                        return
+                    end
+                elseif target:IsA("Humanoid") then
+                    local parent = target.Parent
+                    if not (parent and parent:IsA("Model")) then
+                        return
+                    end
+                    target = gp(target, "HumanoidRootPart", "BasePart") or gp(target, "Torso", "BasePart") or gp(target, "UpperTorso", "BasePart") or target:FindFirstChildWhichIsA("BasePart")
+                    if target then
+                        target = target.Position
+                    else
+                        return
+                    end
+                else
+                    return
+                end
+            elseif typeof(target) == "CFrame" then
                 target = target.Position
             elseif typeof(target) ~= "Vector3" then
                 return
             end
+            lastfling = target
             if type(duration) ~= number then
                 duration = tonumber(duration) or 0.5
             end
@@ -750,7 +791,7 @@ if flingpart0 and flingpart1 then
             end
             local con = nil
             con = heartbeat:Connect(function()
-                if target and flingpart and flingpart0 and flingpart1 and att0 and att1 then
+                if target and (lastfling == target) and flingpart and flingpart0 and flingpart1 and att0 and att1 then
                     flingpart0.RotVelocity = rotVelocity
                     flingpart.Position = target
                 else
@@ -758,13 +799,13 @@ if flingpart0 and flingpart1 then
                 end
             end)
             local steppedRotVel = v3(
-                ((target.X > 0) and -1) or 1,
-                ((target.Y > 0) and -1) or 1,
-                ((target.Z > 0) and -1) or 1
+                ((rotVelocity.X > 0) and -1) or 1,
+                ((rotVelocity.Y > 0) and -1) or 1,
+                ((rotVelocity.Z > 0) and -1) or 1
             )
             local con = nil
             con = stepped:Connect(function()
-                if target and flingpart and flingpart0 and flingpart1 and att0 and att1 then
+                if target and (lastfling == target) and flingpart and flingpart0 and flingpart1 and att0 and att1 then
                     flingpart0.RotVelocity = steppedRotVel
                     flingpart.Position = target
                 else
@@ -772,6 +813,15 @@ if flingpart0 and flingpart1 then
                 end
             end)
             wait(duration)
+            if lastfling ~= target then
+                if flingpart then
+                    if att1 and (att1.Parent == flingpart) then
+                        att1.Parent = flingpart1
+                    end
+                    flingpart:Destroy()
+                end
+                return
+            end
             target = nil
             if not (flingpart and flingpart0 and flingpart1 and att0 and att1) then
                 return
@@ -783,7 +833,9 @@ if flingpart0 and flingpart1 then
                     v.Enabled = true
                 end
             end
-            flingpart:Destroy()
+            if flingpart then
+                flingpart:Destroy()
+            end
         end
     end
 end
