@@ -24,7 +24,7 @@ game.Players.LocalPlayer.Character:FindFirstChild("Animate"):Destroy()
 
 
 
---[[
+
 local function FXCPGR_fake_script() 
 	local script = Instance.new('LocalScript', game.Players.LocalPlayer.Character)
 
