@@ -1,33 +1,33 @@
+
 --reanimate by MyWorld#4430 discord.gg/pYVHtSJmEY
 local Vector3_101 = Vector3.new(1, 0, 1)
 local netless_Y = Vector3.new(0, 25.1, 0)
-local function getNetlessVelocity(realPartVelocity) --edit this if you have a better netless method
-    if (realPartVelocity.Y > 1) or (realPartVelocity.Y < -1) then
-        return realPartVelocity * (25.1 / realPartVelocity.Y)
-    end
-    realPartVelocity *= Vector3_101
+local function getNetlessVelocity(realPartVelocity) --change this if you have a better method
     local mag = realPartVelocity.Magnitude
-    if mag > 1 then
-        realPartVelocity *= 100 / mag
+    if (mag > 1) and (mag < 100) then
+        local unit = realPartVelocity.Unit
+        if (unit.Y > 0.7) or (unit.Y < -0.7) then
+            return realPartVelocity * (25.1 / realPartVelocity.Y)
+        end
+        realPartVelocity = unit * 100
     end
-    return realPartVelocity + netless_Y
+    return (realPartVelocity * Vector3_101) + netless_Y
 end
 local simradius = "shp" --simulation radius (net bypass) method
 --"shp" - sethiddenproperty
 --"ssr" - setsimulationradius
 --false - disable
 local noclipAllParts = false --set it to true if you want noclip
-local flingpart = "HumanoidRootPart" --the part that will be used to fling (ctrl + F "fling function")
-local antiragdoll = false --removes hingeConstraints and ballSocketConstraints from your character
-local newanimate = false --disables the animate script and enables after reanimation
-local discharscripts = false --disables all localScripts parented to your character before reanimation
+local antiragdoll = true --removes hingeConstraints and ballSocketConstraints from your character
+local newanimate = true --disables the animate script and enables after reanimation
+local discharscripts = true --disables all localScripts parented to your character before reanimation
 local R15toR6 = true --tries to convert your character to r6 if its r15
-local hatcollide = true --makes hats cancollide (credit to ShownApe) (works only with reanimate method 0)
-local humState16 = false --enables collisions for limbs before the humanoid dies (using hum:ChangeState)
+local hatcollide = false --makes hats cancollide (credit to ShownApe) (works only with reanimate method 0)
+local humState16 = true --enables collisions for limbs before the humanoid dies (using hum:ChangeState)
 local addtools = false --puts all tools from backpack to character and lets you hold them after reanimation
-local hedafterneck = false --disable aligns for head and enable after neck is removed
+local hedafterneck = true --disable aligns for head and enable after neck or torso is removed
 local loadtime = game:GetService("Players").RespawnTime + 0.5 --anti respawn delay
-local method = 0 --reanimation method
+local method = 3 --reanimation method
 --methods:
 --0 - breakJoints (takes [loadtime] seconds to laod)
 --1 - limbs
@@ -40,6 +40,12 @@ local alignmode = 2 --AlignPosition mode
 --1 - AlignPosition rigidity enabled true
 --2 - 2 AlignPositions rigidity enabled both true and false
 --3 - AlignPosition rigidity enabled false
+local flingpart = "HumanoidRootPart" --name of the part or the hat used for flinging
+--the fling function
+--usage: fling(target, duration, velocity)
+--target can be set to: basePart, CFrame, Vector3, character model or humanoid (flings at mouse.Hit if argument not provided))
+--duration (fling time in seconds) can be set to: a number or a string convertable to the number (0.5s if not provided),
+--velocity (fling part rotation velocity) can be set to a vector3 value (Vector3.new(20000, 20000, 20000) if not provided)
 
 local lp = game:GetService("Players").LocalPlayer
 local rs = game:GetService("RunService")
@@ -50,7 +56,7 @@ local sg = game:GetService("StarterGui")
 local ws = game:GetService("Workspace")
 local cf = CFrame.new
 local v3 = Vector3.new
-local v3_0 = v3(0, 0, 0)
+local v3_0 = Vector3.zero
 local inf = math.huge
 
 local c = lp.Character
@@ -59,8 +65,10 @@ if not (c and c.Parent) then
 	return
 end
 
-c.Destroying:Connect(function()
-	c = nil
+c:GetPropertyChangedSignal("Parent"):Connect(function()
+    if not (c and c.Parent) then
+	    c = nil
+	end
 end)
 
 local function gp(parent, name, className)
@@ -74,14 +82,18 @@ local function gp(parent, name, className)
 	return nil
 end
 
-local function align(Part0, Part1)
-	Part0.CustomPhysicalProperties = PhysicalProperties.new(0.0001, 0.0001, 0.0001, 0.0001, 0.0001)
+if type(getNetlessVelocity) ~= "function" then
+    getNetlessVelocity = nil
+end
 
-	local att0 = Instance.new("Attachment", Part0)
+local function align(Part0, Part1)
+	Part0.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+
+	local att0 = Instance.new("Attachment")
 	att0.Orientation = v3_0
 	att0.Position = v3_0
 	att0.Name = "att0_" .. Part0.Name
-	local att1 = Instance.new("Attachment", Part1)
+	local att1 = Instance.new("Attachment")
 	att1.Orientation = v3_0
 	att1.Position = v3_0
 	att1.Name = "att1_" .. Part1.Name
@@ -122,21 +134,39 @@ local function align(Part0, Part1)
 	ao.Attachment0 = att0
 	ao.RigidityEnabled = false
 
-	if type(getNetlessVelocity) == "function" then
-	    local realVelocity = v3_0
-        local steppedcon = stepped:Connect(function()
-            Part0.Velocity = realVelocity
+	if getNetlessVelocity then
+	    local vel = Part0.Velocity
+	    local velpart = Part1
+        local rsteppedcon = renderstepped:Connect(function()
+            Part0.Velocity = vel
         end)
         local heartbeatcon = heartbeat:Connect(function()
-            realVelocity = Part0.Velocity
-            Part0.Velocity = getNetlessVelocity(realVelocity)
+            vel = Part0.Velocity
+            Part0.Velocity = getNetlessVelocity(velpart.Velocity)
         end)
-        Part0.Destroying:Connect(function()
-            Part0 = nil
-            steppedcon:Disconnect()
-            heartbeatcon:Disconnect()
+        local attcon = nil
+        Part0:GetPropertyChangedSignal("Parent"):Connect(function()
+            if not (Part0 and Part0.Parent) then
+                rsteppedcon:Disconnect()
+                heartbeatcon:Disconnect()
+                attcon:Disconnect()
+            end
         end)
-    end
+        attcon = att1:GetPropertyChangedSignal("Parent"):Connect(function()
+	        if not (att1 and att1.Parent) then
+	            attcon:Disconnect()
+                velpart = Part0
+	        else
+	            velpart = att1.Parent
+	            if not velpart:IsA("BasePart") then
+	                velpart = Part0
+	            end
+	        end
+	    end)
+	end
+	
+	att0.Parent = Part0
+    att1.Parent = Part1
 end
 
 local function respawnrequest()
@@ -304,18 +334,13 @@ if hatcollide and c:FindFirstChildOfClass("Accessory") then
     anything:Destroy()
 end
 
-for i, v in pairs(cl:GetDescendants()) do
-	if v:IsA("BasePart") then
-		v.Transparency = 1
-		v.Anchored = false
-	end
-end
-
 local model = Instance.new("Model", c)
 model.Name = model.ClassName
 
-model.Destroying:Connect(function()
-	model = nil
+model:GetPropertyChangedSignal("Parent"):Connect(function()
+    if not (model and model.Parent) then
+	    model = nil
+    end
 end)
 
 for i, v in pairs(c:GetChildren()) do
@@ -399,6 +424,8 @@ for i, scr in pairs(model:GetDescendants()) do
 					local Part1 = scr1.Parent
 					if (Part1.ClassName == Part0.ClassName) and (Part1.Name == Part0.Name) then
 						align(Part0, Part1)
+						scr:Destroy()
+						scr1:Destroy()
 						break
 					end
 				end
@@ -407,45 +434,19 @@ for i, scr in pairs(model:GetDescendants()) do
 	end
 end
 
-if (typeof(hedafterneck) == "Instance") and head then
-	local aligns = {}
-	local con = nil
-	con = hedafterneck.Changed:Connect(function(prop)
-	    if (prop == "Parent") and not hedafterneck.Parent then
-	        con:Disconnect()
-    		for i, v in pairs(aligns) do
-    			v.Enabled = true
-    		end
-		end
-	end)
-	for i, v in pairs(head:GetDescendants()) do
-		if v:IsA("AlignPosition") or v:IsA("AlignOrientation") then
-			i = tostring(i)
-			aligns[i] = v
-			v.Destroying:Connect(function()
-			    aligns[i] = nil
-			end)
-			v.Enabled = false
-		end
-	end
-end
-
 for i, v in pairs(c:GetDescendants()) do
-	if v and v.Parent then
-		if v.ClassName == "Script" then
-			if table.find(scriptNames, v.Name) then
-				v:Destroy()
-			end
-		elseif not v:IsDescendantOf(model) then
-			if v:IsA("Decal") then
-				v.Transparency = 1
-			elseif v:IsA("ForceField") then
-				v.Visible = false
-			elseif v:IsA("Sound") then
-				v.Playing = false
-			elseif v:IsA("BillboardGui") or v:IsA("SurfaceGui") or v:IsA("ParticleEmitter") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
-				v.Enabled = false
-			end
+	if v and v.Parent and (not v:IsDescendantOf(model)) then
+		if v:IsA("Decal") then
+		    v.Transparency = 1
+		elseif v:IsA("BasePart") then
+			v.Transparency = 1
+			v.Anchored = false
+		elseif v:IsA("ForceField") then
+			v.Visible = false
+		elseif v:IsA("Sound") then
+			v.Playing = false
+		elseif v:IsA("BillboardGui") or v:IsA("SurfaceGui") or v:IsA("ParticleEmitter") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
+			v.Enabled = false
 		end
 	end
 end
@@ -467,19 +468,21 @@ end
 
 local hum0 = model:FindFirstChildOfClass("Humanoid")
 if hum0 then
-    hum0.Destroying:Connect(function()
-        hum0 = nil
+    hum0:GetPropertyChangedSignal("Parent"):Connect(function()
+        if not (hum0 and hum0.Parent) then
+            hum0 = nil
+        end
     end)
 end
 
 local hum1 = c:FindFirstChildOfClass("Humanoid")
 if hum1 then
-    hum1.Destroying:Connect(function()
-        hum1 = nil
+    hum1:GetPropertyChangedSignal("Parent"):Connect(function()
+        if not (hum1 and hum1.Parent) then
+            hum1 = nil
+        end
     end)
-end
-
-if hum1 then
+    
 	ws.CurrentCamera.CameraSubject = hum1
 	local camSubCon = nil
 	local function camSubFunc()
@@ -490,8 +493,8 @@ if hum1 then
 	end
 	camSubCon = renderstepped:Connect(camSubFunc)
 	if hum0 then
-		hum0.Changed:Connect(function(prop)
-			if hum1 and (prop == "Jump") then
+		hum0:GetPropertyChangedSignal("Jump"):Connect(function()
+			if hum1 then
 				hum1.Jump = hum0.Jump
 			end
 		end)
@@ -691,45 +694,82 @@ if R15toR6 then
 			end
 			R6joints[i] = joint
 		end
-		hum1.RigType = Enum.HumanoidRigType.R6
-		hum1.HipHeight = 0
+		if hum1 then
+    		hum1.RigType = Enum.HumanoidRigType.R6
+    		hum1.HipHeight = 0
+		end
 	end
 end
 
---[[
-    fling function
-    usage: fling(target, duration, velocity)
-    target can be set to: basePart, CFrame, Vector3, character model or humanoid
-    duration (fling time) can be set to a number or a string containing the number (in seconds) will be set to 0.5 if not provided,
-    velocity (fling part rotation velocity) can be set to a vector3 value (Vector3.new(20000, 20000, 20000) if not provided)
-]]
+local torso1 = torso
+torso = gp(c, "Torso", "BasePart") or ((not R15toR6) and gp(c, torso.Name, "BasePart"))
+if (typeof(hedafterneck) == "Instance") and head and torso and torso1 then
+	local conNeck = nil
+	local conTorso = nil
+	local contorso1 = nil
+	local aligns = {}
+	local function enableAligns()
+	    conNeck:Disconnect()
+        conTorso:Disconnect()
+        conTorso1:Disconnect()
+		for i, v in pairs(aligns) do
+			v.Enabled = true
+		end
+	end
+	conNeck = hedafterneck.Changed:Connect(function(prop)
+	    if table.find({"Part0", "Part1", "Parent"}, prop) then
+	        enableAligns()
+		end
+	end)
+	conTorso = torso:GetPropertyChangedSignal("Parent"):Connect(enableAligns)
+	conTorso1 = torso1:GetPropertyChangedSignal("Parent"):Connect(enableAligns)
+	for i, v in pairs(head:GetDescendants()) do
+		if v:IsA("AlignPosition") or v:IsA("AlignOrientation") then
+			i = tostring(i)
+			aligns[i] = v
+			v:GetPropertyChangedSignal("Parent"):Connect(function()
+			    aligns[i] = nil
+			end)
+			v.Enabled = false
+		end
+	end
+end
 
-local flingpart0 = gp(model, flingpart, "BasePart")
-local flingpart1 = gp(c, flingpart, "BasePart")
+local flingpart0 = gp(model, flingpart, "BasePart") or gp(gp(model, flingpart, "Accessory"), "Handle", "BasePart")
+local flingpart1 = gp(c, flingpart, "BasePart") or gp(gp(c, flingpart, "Accessory"), "Handle", "BasePart")
 
 local fling = function() end
 if flingpart0 and flingpart1 then
-    flingpart0.Destroying:Connect(function()
-        flingpart0 = nil
-        fling = function() end
+    flingpart0:GetPropertyChangedSignal("Parent"):Connect(function()
+        if not (flingpart0 and flingpart0.Parent) then
+            flingpart0 = nil
+            fling = function() end
+        end
     end)
     flingpart0.Archivable = true
-    flingpart1.Destroying:Connect(function()
-        flingpart1 = nil
-        fling = function() end
+    flingpart1:GetPropertyChangedSignal("Parent"):Connect(function()
+        if not (flingpart1 and flingpart1.Parent) then
+            flingpart1 = nil
+            fling = function() end
+        end
     end)
     local att0 = gp(flingpart0, "att0_" .. flingpart0.Name, "Attachment")
     local att1 = gp(flingpart1, "att1_" .. flingpart1.Name, "Attachment")
     if att0 and att1 then
-        att0.Destroying:Connect(function()
-            att0 = nil
-            fling = function() end
+        att0:GetPropertyChangedSignal("Parent"):Connect(function()
+            if not (att0 and att0.Parent) then
+                att0 = nil
+                fling = function() end
+            end
         end)
-        att1.Destroying:Connect(function()
-            att1 = nil
-            fling = function() end
+        att1:GetPropertyChangedSignal("Parent"):Connect(function()
+            if not (att1 and att1.Parent) then
+                att1 = nil
+                fling = function() end
+            end
         end)
         local lastfling = nil
+        local mouse = lp:GetMouse()
         fling = function(target, duration, rotVelocity)
             if typeof(target) == "Instance" then
                 if target:IsA("BasePart") then
@@ -758,10 +798,15 @@ if flingpart0 and flingpart1 then
             elseif typeof(target) == "CFrame" then
                 target = target.Position
             elseif typeof(target) ~= "Vector3" then
-                return
+                target = mouse.Hit
+                if target then
+                    target = target.Position
+                else
+                    return
+                end
             end
             lastfling = target
-            if type(duration) ~= number then
+            if type(duration) ~= "number" then
                 duration = tonumber(duration) or 0.5
             end
             if typeof(rotVelocity) ~= "Vector3" then
@@ -776,8 +821,12 @@ if flingpart0 and flingpart1 then
             flingpart.CanCollide = false
             flingpart.Name = "flingpart_" .. flingpart0.Name
             flingpart.Anchored = true
-            flingpart.Destroying:Connect(function()
-                flingpart = nil
+            flingpart.Velocity = v3_0
+            flingpart.RotVelocity = v3_0
+            flingpart:GetPropertyChangedSignal("Parent"):Connect(function()
+                if not (flingpart and flingpart.Parent) then
+                    flingpart = nil
+                end
             end)
             flingpart.Parent = flingpart1
             if flingpart0.Transparency > 0.5 then
@@ -798,15 +847,15 @@ if flingpart0 and flingpart1 then
                     con:Disconnect()
                 end
             end)
-            local steppedRotVel = v3(
+            local rsteppedRotVel = v3(
                 ((rotVelocity.X > 0) and -1) or 1,
                 ((rotVelocity.Y > 0) and -1) or 1,
                 ((rotVelocity.Z > 0) and -1) or 1
             )
             local con = nil
-            con = stepped:Connect(function()
+            con = renderstepped:Connect(function()
                 if target and (lastfling == target) and flingpart and flingpart0 and flingpart1 and att0 and att1 then
-                    flingpart0.RotVelocity = steppedRotVel
+                    flingpart0.RotVelocity = rsteppedRotVel
                     flingpart.Position = target
                 else
                     con:Disconnect()
