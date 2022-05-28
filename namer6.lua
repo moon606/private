@@ -1,4 +1,3 @@
-
 --reanimate by MyWorld#4430 discord.gg/pYVHtSJmEY
 local Vector3_101 = Vector3.new(1, 0, 1)
 local netless_Y = Vector3.new(0, 25.1, 0)
@@ -6,7 +5,7 @@ local function getNetlessVelocity(realPartVelocity) --change this if you have a 
     local mag = realPartVelocity.Magnitude
     if (mag > 1) and (mag < 100) then
         local unit = realPartVelocity.Unit
-        if (unit.Y > 0.7) or (unit.Y < -0.7) then
+        if (unit.Y > 0.25) or (unit.Y < -0.75) then
             return realPartVelocity * (25.1 / realPartVelocity.Y)
         end
         realPartVelocity = unit * 100
@@ -563,18 +562,18 @@ if R15toR6 then
 				Name = "Left Arm",
 				Size = v3(1, 2, 1),
 				R15 = {
-					LeftHand = -0.85,
-					LeftLowerArm = -0.2,
-					LeftUpperArm = 0.4
+					LeftHand = -0.849,
+					LeftLowerArm = -0.174,
+					LeftUpperArm = 0.415
 				}
 			},
 			rightArm = {
 				Name = "Right Arm",
 				Size = v3(1, 2, 1),
 				R15 = {
-					RightHand = -0.85,
-					RightLowerArm = -0.2,
-					RightUpperArm = 0.4
+					RightHand = -0.849,
+					RightLowerArm = -0.174,
+					RightUpperArm = 0.415
 				}
 			},
 			leftLeg = {
@@ -582,8 +581,8 @@ if R15toR6 then
 				Size = v3(1, 2, 1),
 				R15 = {
 					LeftFoot = -0.85,
-					LeftLowerLeg = -0.15,
-					LeftUpperLeg = 0.6
+					LeftLowerLeg = -0.29,
+					LeftUpperLeg = 0.49
 				}
 			},
 			rightLeg = {
@@ -591,8 +590,8 @@ if R15toR6 then
 				Size = v3(1, 2, 1),
 				R15 = {
 					RightFoot = -0.85,
-					RightLowerLeg = -0.15,
-					RightUpperLeg = 0.6
+					RightLowerLeg = -0.29,
+					RightUpperLeg = 0.49
 				}
 			}
 		}
