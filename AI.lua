@@ -10,14 +10,14 @@ local std = loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccoun
 
 API.Stuck = function(humanoid: Humanoid)
 	humanoid:Move(Vector3.new(math.random(-1,1),0,math.random(-1,1)))
-	if enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping  then
+	--if enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping then
 
 	enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
                                         wait(1)
 						enemyHuman.Jump = true
 						wait(1)
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, true)
-	end
+	--end
 end
 
 local g_id = 0
