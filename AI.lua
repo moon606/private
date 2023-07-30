@@ -227,7 +227,7 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 						
 						return
 					end
-					print(waypoint.Action)
+					--print(waypoint.Action)
 					if waypoint.Action == Enum.PathWaypointAction.Jump and  enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping then
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
                                         wait(1)
