@@ -16,7 +16,8 @@ API.Stuck = function(humanoid: Humanoid)
 		humanoid:Move(Vector3.new(math.random(-1,1),0,math.random(-1,1)))
 		humanoid:SetStateEnabled(Enum.HumanoidStateType.Running, false)
 		wait(1)
-		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		--humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		enemyHuman.Jump = true
 		wait(1)
 		humanoid:SetStateEnabled(Enum.HumanoidStateType.Running, true)
 	end
@@ -231,16 +232,28 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 					if waypoint.Action == Enum.PathWaypointAction.Jump and  not (enemyHuman:GetState() == Enum.HumanoidStateType.Jumping) then
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
 						wait(1)
-						enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+						--enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+						enemyHuman.Jump = true
 						wait(1)
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, true)
 					end
+
+                                    if enemyHuman.Sit == true and not (enemyHuman:GetState() == Enum.HumanoidStateType.Jumping) then
+                                      enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
+						wait(1)
+						--enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+						enemyHuman.Jump = true
+						wait(1)
+						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, true)
+	                                     end
+					
 					enemyHuman:MoveTo(waypoint.Position)
 					delay(0.5, function()
 						if enemyHuman.WalkToPoint.Y > (targetRoot.Position.Y + 0.5) and (enemyRoot.Position - targetRoot.Position).Magnitude < 5 and not (enemyHuman:GetState() == Enum.HumanoidStateType.Jumping) then
 							enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
 							wait(1)
-							enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+							--enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+								enemyHuman.Jump = true
 							wait(1)
 							enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, true)
 						end
