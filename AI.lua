@@ -218,13 +218,14 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 						
 						return
 					end
+					print(waypoint.Action)
 					if waypoint.Action == Enum.PathWaypointAction.Jump then
-						enemyHuman.Jump = true
+						enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
 					end
 					enemyHuman:MoveTo(waypoint.Position)
 					delay(0.5, function()
 						if enemyHuman.WalkToPoint.Y > (targetRoot.Position.Y + 0.5) and (enemyRoot.Position - targetRoot.Position).Magnitude < 5 then
-							enemyHuman.Jump = true
+							enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
 						end
 					end)
 					
