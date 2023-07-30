@@ -10,11 +10,11 @@ local std = loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccoun
 
 API.Stuck = function(humanoid: Humanoid)
 	humanoid:Move(Vector3.new(math.random(-1,1),0,math.random(-1,1)))
-	if enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping and enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping then
+	if enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping  then
 
 	enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
                                         wait(1)
-						enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
+						enemyHuman.Jump = true
 						wait(1)
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, true)
 	end
@@ -226,7 +226,7 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 						return
 					end
 					print(waypoint.Action)
-					if waypoint.Action == Enum.PathWaypointAction.Jump then
+					if waypoint.Action == Enum.PathWaypointAction.Jump and  enemyHuman:GetState ~= Enum.HumanoidStateType.Jumping then
 						enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
                                         wait(1)
 						enemyHuman:ChangeState(Enum.HumanoidStateType.Jumping)
