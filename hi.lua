@@ -1,15 +1,4 @@
 --originally By NathanReturns additions by mo_on
-getgenv().DisableAnimate = false
-
-getgenv().AnimationPack = "Werewolf"
---[[
-Knight
-Astronaut
-Werewolf
---]]
-getgenv().Speed = 0.5
-
-
 if LOADED then
 	return
 end
@@ -98,7 +87,8 @@ local botgoing = "starting"
 if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 if Settings.rejoined == true then
-	botgoing = Settings.botgoingto
+	print("rejoined")
+	--botgoing = Settings.botgoingto
 	Settings.rejoined = false
 	Save()
 end
@@ -485,46 +475,46 @@ end
 spawn(function()
 	repeat task.wait(1)
 		pcall(function()
-			if aa == "reg 2" then
+			if botgoing == "reg 2" then
 				reg2()
 				wait(speed)
-				aa = "reg 1"
+				botgoing = "reg 1"
 				
-			elseif aa == "reg 1" then
+			elseif botgoing == "reg 1" then
 				reg1()
 				wait(speed)
-				aa = "reg 2 ag"
+				botgoing = "reg 2 ag"
 				
-			elseif aa == "reg 2 ag" then
+			elseif botgoing == "reg 2 ag" then
 				reg2again()
 				wait(speed)
-				aa = "houseing"
+				botgoing = "houseing"
 				
-			elseif aa == "houseing" then
+			elseif botgoing == "houseing" then
 				housekeeping()
 				wait(speed)
-				aa = "bar"
+				botgoing = "bar"
 				
-			elseif aa == "bar" then
+			elseif botgoing == "bar" then
 				bar()
 				wait(speed)
-				aa = "reg2ag"
+				botgoing = "reg2ag"
 				
-			elseif aa == "reg2ag" then
+			elseif botgoing == "reg2ag" then
 				reg2ag()
 				wait(speed)
-				aa = "reg1ag"
+				botgoing = "reg1ag"
 				
-			elseif aa == "reg1ag" then
+			elseif botgoing == "reg1ag" then
 				reg1ag()
 				wait(speed)
-				aa = "reg2agag"
+				botgoing = "reg2agag"
 				
-			elseif aa == "reg2agag" then
+			elseif botgoing == "reg2agag" then
 				
 				reg2again()
 				wait(speed)
-				aa = "reg 2"
+				botgoing = "reg 2"
 			
 			end
 			wait(speed)
