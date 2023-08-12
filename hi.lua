@@ -66,7 +66,7 @@ Dir.DescendantAdded:Connect(function(Err)
                  
                  ]])
 
-				wait(1)
+				wait(2)
 				rejoin = true
 
 			end
@@ -85,7 +85,24 @@ end)
 
 
 
-local aa = nil
+local Settings
+local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
+local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+end
+
+
+local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
+
+local botgoing = "starting"
+
+if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+if Settings.rejoined == true then
+	botgoing = Settings.botgoingto
+	Settings.rejoined = false
+	Save()
+end
+
 
 
 
@@ -136,7 +153,7 @@ spawn(function()
 	Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(50, 43, 89)----tp outside
 end)
 
-botversion = "test version"
+botversion = "V5"
 local name = "Returner BOT"
 game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("["..name.."]: "..botversion.." has loaded.","All")
 game.StarterGui:SetCore("SendNotification", {
@@ -160,11 +177,6 @@ Character.ChildAdded:Connect(function(child)
 			} 
 
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
-
-			local Settings
-			local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
-			local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
-			end
 			if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 			Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 			Settings.DisableAnimate = getgenv().DisableAnimate
@@ -178,13 +190,12 @@ Character.ChildAdded:Connect(function(child)
                  Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
-                 getgenv().UsePathfinding = Settings.UsePathfinding
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
                  ]])
 
-			wait (1)
+			wait (2)
 
 			rejoin = true
 
@@ -252,15 +263,15 @@ local TeleportService = game:GetService("TeleportService")
 
 
 local speed = getgenv().Speed
-
+if botgoing == "starting" then
 spawn(function()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(76, 44, 89)--walks on carpet thing
 end)
-plr.Character.Humanoid.MoveToFinished:Wait()
+	plr.Character.Humanoid.MoveToFinished:Wait()
+	botgoing = "reg 2"
+end
 
 
-
-aa = "reg 2"
 
 function reg2()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(145, 43, 90)---walks to reg 2 2
@@ -403,6 +414,14 @@ function bar()
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 	end
 	)
+	
+	wait()
+	plr.Character.Humanoid.WalkToPoint = Vector3.new(113, 44, 60)
+	plr.Character.Humanoid.MoveToFinished:Wait()
+	plr.Character.Humanoid.WalkToPoint = Vector3.new(115, 44, 90)
+	plr.Character.Humanoid.MoveToFinished:Wait()
+	plr.Character.Humanoid.WalkToPoint = Vector3.new(145, 43, 90)
+	plr.Character.Humanoid.MoveToFinished:Wait()
 end
 
 
@@ -492,13 +511,11 @@ spawn(function()
 				aa = "reg2ag"
 				
 			elseif aa == "reg2ag" then
-			print("testing")
 				reg2ag()
 				wait(speed)
 				aa = "reg1ag"
 				
 			elseif aa == "reg1ag" then
-			print("why test")
 				reg1ag()
 				wait(speed)
 				aa = "reg2agag"
