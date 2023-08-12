@@ -1,9 +1,26 @@
 --originally By NathanReturns additions by mo_on
+getgenv().DisableAnimate = false
+
+getgenv().AnimationPack = "Werewolf"
+--[[
+Knight
+Astronaut
+Werewolf
+--]]
+getgenv().Speed = 0.5
+
+
 if LOADED then
 	return
 end
 
 pcall(function() getgenv().LOADED = true end)
+
+
+
+
+
+
 
 if game.PlaceId == 1990228024 then
 else
@@ -16,13 +33,50 @@ else
 	return
 end
 
+local rejoin = false
+
+local Dir = game:GetService("CoreGui"):WaitForChild("RobloxPromptGui"):WaitForChild("promptOverlay")
+game.Players.PlayerRemoving:Connect(function(plr)
+	if plr.Name == game.Players.LocalPlayer.Name then
+		if Dir:FindFirstChild("ErrorTitle") then
+			if Dir:FindFirstChild("ErrorTitle").Text:sub(0, 12) == "Disconnected" then
+				local Settings
+				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
+				local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+				end
+				if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+				Settings.DisableAnimate = getgenv().DisableAnimate
+				Settings.AnimationPack=getgenv().AnimationPack
+				Settings.UsePathfinding =getgenv().UsePathfinding
+				Save()
+
+
+				queue_on_teleport([[
+				
+				 local Settings
+                 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+                 getgenv().DisableAnimate = Settings.DisableAnimate
+                 getgenv().AnimationPack = Settings.AnimationPack
+                 getgenv().UsePathfinding = Settings.UsePathfinding
+                 
+                 loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
+                 
+                 ]])
+
+				wait(2)
+				rejoin = true
+			end
+		end
+	end
+end)
+
+
 local Character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
 
 
-local rejoin = false
 
 
-local Dir = game:GetService("CoreGui"):WaitForChild("RobloxPromptGui"):WaitForChild("promptOverlay")
 Dir.DescendantAdded:Connect(function(Err)
 	if Err.Name == "ErrorTitle" then
 		Err:GetPropertyChangedSignal("Text"):Connect(function()
@@ -70,7 +124,6 @@ spawn(function()
 		end
 	end)
 end)
-
 
 
 
@@ -143,7 +196,7 @@ spawn(function()
 	Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(50, 43, 89)----tp outside
 end)
 
-botversion = "V5"
+botversion = "test version"
 local name = "Returner BOT"
 game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("["..name.."]: "..botversion.." has loaded.","All")
 game.StarterGui:SetCore("SendNotification", {
