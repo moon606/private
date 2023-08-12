@@ -1,13 +1,4 @@
 --originally By NathanReturns additions by mo_on
-getgenv().DisableAnimate = false
-
-getgenv().AnimationPack = "Werewolf"
---[[
-Knight
-Astronaut
-Werewolf
---]]
-getgenv().Speed = 0.5
 
 
 if LOADED then
