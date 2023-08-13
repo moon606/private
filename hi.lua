@@ -1,6 +1,6 @@
 --originally By NathanReturns additions by mo_on
 
-
+print("new")
 if LOADED then
 	return
 end
