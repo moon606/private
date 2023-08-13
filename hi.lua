@@ -1,4 +1,3 @@
---originally By NathanReturns additions by mo_on
 
 
 if LOADED then
@@ -8,6 +7,29 @@ end
 pcall(function() getgenv().LOADED = true end)
 
 
+
+
+local botgoing = "starting"
+
+
+
+
+local Settings
+local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
+local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+end
+
+
+
+
+if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+if Settings.rejoined == true then
+	print("rejoined")
+	botgoing = Settings.botgoingto
+	Settings.rejoined = false
+	Save()
+end
 
 
 
@@ -32,14 +54,16 @@ game.Players.PlayerRemoving:Connect(function(plr)
 		if Dir:FindFirstChild("ErrorTitle") then
 			if Dir:FindFirstChild("ErrorTitle").Text:sub(0, 12) == "Disconnected" then
 				local Settings
-				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
+				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
+
 				local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
 				end
 				if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
-				Settings.UsePathfinding =getgenv().UsePathfinding
+				Settings.rejoined = true
+				Settings.botgoingto = botgoing
 				Save()
 
 
@@ -49,7 +73,7 @@ game.Players.PlayerRemoving:Connect(function(plr)
                  Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
-                 getgenv().UsePathfinding = Settings.UsePathfinding
+                
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
@@ -77,14 +101,16 @@ Dir.DescendantAdded:Connect(function(Err)
 					beforeKicked = game.Workspace:WaitForChild(game.Players.LocalPlayer.Name):WaitForChild("HumanoidRootPart").CFrame
 				end
 				local Settings
-				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
+				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
+
 				local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
 				end
 				if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
-				Settings.UsePathfinding =getgenv().UsePathfinding
+				Settings.rejoined = true
+				Settings.botgoingto = botgoing
 				Save()
 
 
@@ -94,7 +120,7 @@ Dir.DescendantAdded:Connect(function(Err)
                  Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
-                 getgenv().UsePathfinding = Settings.UsePathfinding
+                
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
@@ -117,25 +143,6 @@ spawn(function()
 end)
 
 
-
-local Settings
-local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",UsePathfinding="nil"}			
-local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
-end
-
-
-local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
-
-local botgoing = "starting"
-
-if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
-Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
-if Settings.rejoined == true then
-	print("rejoined")
-	--botgoing = Settings.botgoingto
-	Settings.rejoined = false
-	Save()
-end
 
 
 
@@ -184,8 +191,40 @@ for i,v in pairs(game:GetService("Players"):GetPlayers())  do
 	end end
 
 spawn(function()
-	Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(50, 43, 89)----tp outside
+	if botgoing == "starting" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(50, 43, 89)----tp outside
+		
+	elseif botgoing == "reg 2" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(125, 44, 90)----tp
+
+	elseif botgoing == "reg 1" then
+		-- 119, 44, 90
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(119, 44, 90)----tp
+		
+	elseif botgoing == "reg 2 ag" then
+		-- 118, 44, 74
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(118, 44, 74)-- tp
+	elseif botgoing == "housekeeping" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(29, 43, 88)-- tp
+
+		
+	elseif botgoing == "bar" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(115, 44, 156)-- tp
+
+	elseif botgoing == "reg2ag" then
+		
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(113, 44, 60)-- tp
+
+		
+	elseif botgoing == "reg1ag" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(119, 44, 90)-- tp
+
+	elseif botgoing == "reg2agag" then
+		Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(118, 44, 74)-- tp
+
+		end
 end)
+
 
 botversion = "test version"
 local name = "Returner BOT"
@@ -215,6 +254,8 @@ Character.ChildAdded:Connect(function(child)
 			Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 			Settings.DisableAnimate = getgenv().DisableAnimate
 			Settings.AnimationPack=getgenv().AnimationPack
+			Settings.rejoined = true
+			Settings.botgoingto = botgoing
 			Save()
 
 
@@ -224,10 +265,12 @@ Character.ChildAdded:Connect(function(child)
                  Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
+                
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
                  ]])
+
 
 			wait (2)
 
@@ -323,7 +366,7 @@ function reg2()
 end
 
 
-function reg1()
+function reg1() -- aaa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(119, 44, 90)
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(118, 44, 74)
@@ -344,7 +387,7 @@ function reg1()
 end
 
 
-function reg2again()
+function reg2again() --aa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(118, 44, 74)
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(119, 44, 90)
@@ -363,7 +406,7 @@ function reg2again()
 end
 
 
-function housekeeping()
+function housekeeping() -- aa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(29, 43, 88)---------walk to housekeeping
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(76, 43, 89)
@@ -398,7 +441,7 @@ end
 
 
 
-function bar()
+function bar() -- aa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(115, 44, 156)---------walk to bar
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(116, 44, 91)
@@ -448,18 +491,10 @@ function bar()
 		game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 	end
 	)
-	
-	wait()
-	plr.Character.Humanoid.WalkToPoint = Vector3.new(113, 44, 60)
-	plr.Character.Humanoid.MoveToFinished:Wait()
-	plr.Character.Humanoid.WalkToPoint = Vector3.new(115, 44, 90)
-	plr.Character.Humanoid.MoveToFinished:Wait()
-	plr.Character.Humanoid.WalkToPoint = Vector3.new(145, 43, 90)
-	plr.Character.Humanoid.MoveToFinished:Wait()
 end
 
 
-function reg2ag()
+function reg2ag() -- aa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(113, 44, 60)
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(115, 44, 90)
@@ -478,7 +513,7 @@ function reg2ag()
 end
 
 
-function reg1ag()
+function reg1ag() -- aa
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(119, 44, 90)
 	plr.Character.Humanoid.MoveToFinished:Wait()
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(118, 44, 74)
@@ -497,7 +532,7 @@ wait()
 end
 
 
-function reg2agag()
+function reg2agag() 
 	print("hi")
 	plr.Character.Humanoid.WalkToPoint = Vector3.new(118, 44, 74)
 	plr.Character.Humanoid.MoveToFinished:Wait()
@@ -532,9 +567,9 @@ spawn(function()
 			elseif botgoing == "reg 2 ag" then
 				reg2again()
 				wait(speed)
-				botgoing = "houseing"
+				botgoing = "housekeeping"
 				
-			elseif botgoing == "houseing" then
+			elseif botgoing == "housekeeping" then
 				housekeeping()
 				wait(speed)
 				botgoing = "bar"
