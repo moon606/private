@@ -29,7 +29,7 @@ if Settings.rejoined == "t"  then
 	botgoing = Settings.botgoingto
 	Settings.rejoined = "f"
 	end
-end
+
 
 
 print(botgoing)
