@@ -7,6 +7,8 @@ end
 
 pcall(function() getgenv().LOADED = true end)
 
+
+
 local botgoing = "starting"
 
 
@@ -20,7 +22,7 @@ end
 
 
 
-if not pcall(function() readfile(Name) end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+if not pcall(function() readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi") end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
 if Settings.botgoingto  then
 	print(Settings.botgoingto.."  aaaaaaaaaaaa")
@@ -56,7 +58,7 @@ game.Players.PlayerRemoving:Connect(function(plr)
 		if Dir:FindFirstChild("ErrorTitle") then
 			if Dir:FindFirstChild("ErrorTitle").Text:sub(0, 12) == "Disconnected" then
 	
-				if not pcall(function() readfile(Name) end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+				if not pcall(function() readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi") end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
 				Settings.rejoined = "t"
@@ -99,7 +101,7 @@ Dir.DescendantAdded:Connect(function(Err)
 				end
 		
 
-				if not pcall(function() readfile(Name) end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+				if not pcall(function() readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi") end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
 				Settings.rejoined = "t"
@@ -243,7 +245,7 @@ Character.ChildAdded:Connect(function(child)
 			} 
 
 			game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
-			if not pcall(function() readfile(Name) end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+			if not pcall(function() readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi") end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 			Settings.DisableAnimate = getgenv().DisableAnimate
 			Settings.AnimationPack=getgenv().AnimationPack
 			Settings.rejoined = "t"
