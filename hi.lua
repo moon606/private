@@ -26,7 +26,7 @@ end
 if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 if Settings.botgoingto  then
-	  if Settings.botgoingto == nil then
+	  if Settings.botgoingto == "nil" then
         print("nil")
         else
 	print("rejoined")
