@@ -7,9 +7,6 @@ end
 
 pcall(function() getgenv().LOADED = true end)
 
-
-
-
 local botgoing = "starting"
 
 
@@ -33,7 +30,6 @@ if Settings.botgoingto  then
 	print("rejoined")
 	botgoing = Settings.botgoingto
 	Settings.rejoined = "f"
-	
 	end
 end
 
@@ -74,7 +70,7 @@ game.Players.PlayerRemoving:Connect(function(plr)
                  Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
-                
+                print(Settings.botgoingto.." rejoin")
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
@@ -117,7 +113,7 @@ Dir.DescendantAdded:Connect(function(Err)
                  Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
-                
+                print(Settings.botgoingto.." rejoin")
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
                  
@@ -261,6 +257,7 @@ Character.ChildAdded:Connect(function(child)
                  Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
+                 print(Settings.botgoingto.." rejoin")
                 
                  
                  loadstring(game:HttpGet("https://raw.githubusercontent.com/oldAccount894/private/main/hi.lua"))()
