@@ -1,3 +1,4 @@
+--originally By NathanReturns additions by mo_on
 
 
 if LOADED then
@@ -24,10 +25,10 @@ end
 
 if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
-if Settings.rejoined == true then
+if Settings.rejoined == "t" then
 	print("rejoined")
 	botgoing = Settings.botgoingto
-	Settings.rejoined = false
+	Settings.rejoined = "f"
 	Save()
 end
 
@@ -62,7 +63,7 @@ game.Players.PlayerRemoving:Connect(function(plr)
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
-				Settings.rejoined = true
+				Settings.rejoined = "t"
 				Settings.botgoingto = botgoing
 				Save()
 
@@ -109,7 +110,7 @@ Dir.DescendantAdded:Connect(function(Err)
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
 				Settings.AnimationPack=getgenv().AnimationPack
-				Settings.rejoined = true
+				Settings.rejoined = "t"
 				Settings.botgoingto = botgoing
 				Save()
 
@@ -226,7 +227,7 @@ spawn(function()
 end)
 
 
-botversion = "test version"
+botversion = "V5"
 local name = "Returner BOT"
 game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("["..name.."]: "..botversion.." has loaded.","All")
 game.StarterGui:SetCore("SendNotification", {
@@ -254,7 +255,7 @@ Character.ChildAdded:Connect(function(child)
 			Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 			Settings.DisableAnimate = getgenv().DisableAnimate
 			Settings.AnimationPack=getgenv().AnimationPack
-			Settings.rejoined = true
+			Settings.rejoined = "t"
 			Settings.botgoingto = botgoing
 			Save()
 
