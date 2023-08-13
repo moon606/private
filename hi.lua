@@ -33,6 +33,7 @@ if Settings.botgoingto  then
 	botgoing = Settings.botgoingto
 	Settings.rejoined = "f"
 	Save()
+	end
 end
 
 print(botgoing)
