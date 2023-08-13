@@ -17,7 +17,7 @@ local botgoing = "starting"
 
 local Settings
 local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
-local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+local function Save()writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
 end
 
 
@@ -57,8 +57,9 @@ game.Players.PlayerRemoving:Connect(function(plr)
 				local Settings
 				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
 
-				local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
-				end
+				local function Save()writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+end
+
 				if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
@@ -104,8 +105,9 @@ Dir.DescendantAdded:Connect(function(Err)
 				local Settings
 				local DefaultSettings = {DisableAnimate="nil",AnimationPack="nil",rejoined="nil",botgoingto="nil"}			
 
-				local function Save()writefile("Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
-				end
+				local function Save()writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi",game:service'HttpService':JSONEncode(Settings))
+end
+
 				if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
 				Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
 				Settings.DisableAnimate = getgenv().DisableAnimate
