@@ -23,8 +23,8 @@ end
 
 
 
-if not pcall(function() readfile(Name) end) then writefile("Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
-Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+if not pcall(function() readfile(Name) end) then writefile(game.Players.LocalPlayer.Name.."Returnerbot.hi", game:service'HttpService':JSONEncode(DefaultSettings)) end
+Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
 if Settings.botgoingto  then
 	print(Settings.botgoingto.."  aaaaaaaaaaaa")
 	  if Settings.botgoingto == "nil" then
@@ -77,7 +77,7 @@ end
 				queue_on_teleport([[
 				
 				 local Settings
-                 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+                 Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
                 
@@ -125,7 +125,7 @@ end
 				queue_on_teleport([[
 				
 				 local Settings
-                 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+                 Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
                 
@@ -270,7 +270,7 @@ Character.ChildAdded:Connect(function(child)
 			queue_on_teleport([[
 				
 				 local Settings
-                 Settings = game:service'HttpService':JSONDecode(readfile("Returnerbot.hi"))
+                 Settings = game:service'HttpService':JSONDecode(readfile(game.Players.LocalPlayer.Name.."Returnerbot.hi"))
                  getgenv().DisableAnimate = Settings.DisableAnimate
                  getgenv().AnimationPack = Settings.AnimationPack
                 
