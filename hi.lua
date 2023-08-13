@@ -32,7 +32,7 @@ if Settings.rejoined == "t" then
 	Save()
 end
 
-
+print(botgoing)
 
 
 
