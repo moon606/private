@@ -167,7 +167,7 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 	end
 
 	local function moveTo()
-		enemyHuman:MoveTo(targetRoot.Position)
+		enemyHuman:MoveTo(targetRoot)
 
 		if not pfSettings.Tracking then
 
@@ -180,7 +180,7 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 		local result = losCheck()
 		if result then moveTo() return end
 
-		path:ComputeAsync(enemyRoot.Position,targetRoot.Position)
+		path:ComputeAsync(enemyRoot.Position,targetRoot)
 		local waypoints = path:GetWaypoints()
 
 
@@ -256,7 +256,7 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 					
 					enemyHuman:MoveTo(waypoint.Position)
 					delay(0.5, function()
-						if enemyHuman.WalkToPoint.Y > (targetRoot.Position.Y + 0.5) and (enemyRoot.Position - targetRoot.Position).Magnitude < 5  then
+						if enemyHuman.WalkToPoint.Y > (targetRoot.Y + 0.5) and (enemyRoot.Position - targetRoot).Magnitude < 5  then
 								if enemyHuman.Jump == true then
 						else
 							enemyHuman:SetStateEnabled(Enum.HumanoidStateType.Running, false)
@@ -290,8 +290,8 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 		if pfSettings.Tracking == true then
 			while processes[NPC] ~= false do
 
-				if std.math.Round(targetRoot.Position) ~= lastPos then 
-					lastPos = std.math.Round(targetRoot.Position)
+				if std.math.Round(targetRoot) ~= lastPos then 
+					lastPos = std.math.Round(targetRoot)
 					if pfSettings.Visualize then destroyWP() end
 					spawn(pathfind)
 				end
@@ -314,9 +314,9 @@ API.SmartPathfind = function(NPC: any, Target: any, Yields: boolean, Settings: "
 			if pfSettings.Tracking == true then
 				while processes[NPC] ~= false do
 
-					if std.math.Round(targetRoot.Position) ~= lastPos then 
+					if std.math.Round(targetRoot) ~= lastPos then 
 						if pfSettings.Visualize then destroyWP() end
-						lastPos = std.math.Round(targetRoot.Position)
+						lastPos = std.math.Round(targetRoot)
 						spawn(pathfind)
 					end
 					wait()
